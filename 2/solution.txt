@@ -1,0 +1,88 @@
+1. коды
+
+add ax, bx          // 66 01 d8
+add ax, [bx]        // 66 67 03 07
+and ax, bx          // 66 21 d8
+jb label            // 72 00 
+sar ax, 1           // 66 d1 f8
+add ax, [bx+4*di+4] // 66 67 03 42 04
+
+2. A[] -> B[]
+
+asm {
+	lea bx, A[0]
+	lea si, B[0]
+	mov cx, 0
+}
+label: asm {
+	mov ax, ss:[bx]
+	mov ss:[si], ax
+	add bx, 2
+	add si, 2
+
+	inc cx
+	cmp cx, 10
+	jl label
+}
+
+3. loop
+
+asm {
+	lea bx, A[0]
+	lea si, B[0]
+	mov cx, 10
+}
+label: asm {
+	mov ax, ss:[bx]
+	mov ss:[si], ax
+	add bx, 2
+	add si, 2
+	loop label
+}
+
+4. REP MOVSb
+
+	cld
+	mov cx, 10
+	lea si, A[0]
+	lea di, B[0]
+	push ds
+	mov ax, es
+	mov ds, ax
+	rep movsw
+	pop ds
+
+5. LARGE LDS LES
+
+sizeof(int*) = 4
+sizeof(int) = 2
+
+int far *pA = (int*) A;
+int far *pB = (int*) B;
+asm {
+	push es
+	push ds
+	cld
+	lds si, pA
+	les di, pB
+	mov cx, 10
+	rep movsw
+	pop ds
+	pop es
+}
+
+6. b8000 -> b8500
+
+int far *p1 = (int*) 0xb8000000;
+int far *p2 = (int*) 0xb8500000;
+asm {
+	push es
+	push ds
+	cld
+	lds si, p1
+	les di, p2
+	mov cx, 128
+	rep movsw
+	pop ds
+	pop es
+}
