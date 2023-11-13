@@ -86,29 +86,29 @@ int main()
 	char cScan,cAsci;
 	do
 	{
-	 // ‡ £àã§¨âì ¯ àã à¥£¨áâà®¢, ­ ¯à¨¬¥à ds:si §­ ç¥­¨¥¬ 0x40:0x1A
+	 // Load registers  ds:si with value  0x40:0x1A
 	__asm {
 		push ds 	//
-		push si         //  ‘®åà ­¨«¨ à¥£¨áâàë
+		push si         //  save registers
 		push di         //
 		mov ax,0x40     //
-		mov ds,ax       //   ‡ £àã§¨«¨ á¥£¬¥­â
-		mov si,0x1A     // ¨ ãª § â¥«¨ ­  £®«®¢ã
-		mov di,0x1C     // ¨ ­  å¢®áâ
-		}
+		mov ds,ax       // load segment
+		mov si,0x1A     // load head pointer
+		mov di,0x1C     // load tail pointer
+	}
 	wait_kbd:
 	__asm {
-		 mov ax,[si]     //   ‘à ¢­¨¢ ¥¬ ãª § â¥«¨ -
-		 cmp ax,[di]     // â.¥. ¦¤¥¬ ­ ¦ â¨ï
+		 mov ax,[si]     // Comparing pointers and waiting for press
+		 cmp ax,[di]
 		 je wait_kbd
-	// ‡ £àã§¨âì à¥£¨áâà di §­ ç¥­¨¥¬ 0x1C
-	// ‘à ¢­¨âì ãª § â¥«¨
-	// à®ç¨â âì ãª § â¥«ì
+	// load di with value 0x1C
+	// compare pointers
+	// read pointer
 		 mov si,[si]
-		 }
+	}
 	iAdres=_SI;
-	// à®ç¨â âì §­ ç¥­¨¥ ¨§ ¡ãä¥à 
-	// è0è&^XºÃE= ¨ _AH á®¤¥à¦ â áª ­-ª®¤ ¨ ASCII-ª®¤è*ëÐÃ&W&A€=t€&út‹ë&‰=_asm pop si
+	// Read value from buffer
+	// registers AL_ and  _AH comatain Scan -code ASCII-code
 	__asm mov ax, [si]
 	__asm pop di
 	__asm pop si
@@ -116,7 +116,7 @@ int main()
 	cScan=_AL;
 	cAsci=_AH;
 	if (toPrint == 1) {
-	printf("€¤à¥á = %x   ‘ª ­ = %d      ASCII = %d \n",iAdres,cScan,cAsci);
+	printf("Adress = %x   Scan ­ = %d      ASCII = %d \n",iAdres,cScan,cAsci);
 	toPrint = 0;
 	}
 	else {
